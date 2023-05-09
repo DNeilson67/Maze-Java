@@ -3,14 +3,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Node extends JButton implements ActionListener {
+public class Node extends JButton implements ActionListener, Comparable<Node> {
 
+    int priority;
     Node parent;
     int col;
     int row;
-    int gCost; //DISTANCE OF START AND CURRENT POINT
-    int hCost; //DISTANCE OF CURRENT POINT AND END POINT
-    int fCost; //TOTAL COST OF G AND H 
+    public int distance; //DISTANCE OF START AND CURRENT POINT
+    int rootDistance; //DISTANCE OF CURRENT POINT AND END POINT
+    int manhattanDistance; //TOTAL COST OF G AND H
     boolean start;
     boolean goal;
     boolean solid;
@@ -49,8 +50,12 @@ public class Node extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        setBackground(Color.orange);
+        setAsSolid();
     }
 
 
+    @Override
+    public int compareTo(Node o) {
+        return 0;
+    }
 }

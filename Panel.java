@@ -38,6 +38,14 @@ public class Panel extends JPanel {
         setGoalPoint(9,3);
         AStar(this, startPoint, endPoint);
 
+        setSolidNode(5, 3);
+        setSolidNode(5, 4);
+        setSolidNode(5, 5);
+        setSolidNode(5, 6);
+        setSolidNode(5, 7);
+        setSolidNode(5, 8);
+        setSolidNode(5, 9);
+
     }
     private void setStartPoint(int col, int row){
 
@@ -85,7 +93,7 @@ public class Panel extends JPanel {
         // Iterate over the priority queue until it is empty.
         while (!queue.isEmpty()) {
             Node curNode = queue.poll();  // Fetch next closest node
-            curNode.setAsDiscovered(); // Mark as discovered
+            if(curNode != end && curNode != start) curNode.setAsDiscovered(); // Mark as discovered
             if(curNode == end) break;
 
             // Iterate over unvisited neighbors
@@ -131,7 +139,7 @@ public class Panel extends JPanel {
         // Iterate over the priority queue until it is empty.
         while (!queue.isEmpty()) {
             Node curNode = queue.poll(); // Fetch next closest node
-            curNode.setAsDiscovered(); // Mark as discovered
+            if(curNode != end && curNode != start) curNode.setAsDiscovered(); // Mark as discovered
             if(curNode == end) break;
 
             // Iterate over unvisited neighbors

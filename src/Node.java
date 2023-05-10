@@ -53,9 +53,22 @@ public class Node extends JButton implements ActionListener, Comparable<Node> {
 
     }
 
+    public void deselect(){
+       setBackground(Color.WHITE);
+       setForeground(Color.BLACK);
+       solid = false;
+       start = false;
+       goal = false;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        setAsSolid();
+        if (getBackground() == Color.WHITE && getForeground() == Color.BLACK){
+            setAsSolid();
+        }
+        else{
+            deselect();
+        }
     }
 
 

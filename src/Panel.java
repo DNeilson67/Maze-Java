@@ -1,9 +1,10 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.util.ArrayList;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Panel extends JPanel {
@@ -19,8 +20,7 @@ public class Panel extends JPanel {
     public Panel(){
         //SETTING ROW AND COLUMNS OF MAP
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.black);
-        this.setLayout(new GridLayout(maxRow, maxCol));
+        this.setLayout(new GridLayout(maxRow+1, maxCol));
 
 
         //PlACING NODES
@@ -37,10 +37,107 @@ public class Panel extends JPanel {
             }
         }
 
+
+        //BUTTONS
+        JRadioButton Dijkstra = new JRadioButton("Dijkstra");
+        JRadioButton AStar = new JRadioButton("AStar");
+        JRadioButton BFS = new JRadioButton("BFS");
+        JRadioButton DFS = new JRadioButton("DFS");
+        JCheckBox StartB = new JCheckBox("Start");
+        JCheckBox GoalB = new JCheckBox("Goal");
+        JCheckBox WallB = new JCheckBox("Wall");
+        JButton Import = new JButton("Import");
+        JButton Reset = new JButton("Reset");
+        JButton Start = new JButton("Start");
+        JButton Save = new JButton("Save");
+
+        // GROUP BUTTONS
+        ButtonGroup BG = new ButtonGroup();
+        BG.add(Dijkstra);
+        BG.add(AStar);
+        BG.add(BFS);
+        BG.add(DFS);
+
+        ButtonGroup BG2 = new ButtonGroup();
+        BG2.add(StartB);
+        BG2.add(GoalB);
+        BG2.add(WallB);
+
+        // ADDING THE BUTTONS TO THE FRAME
+        this.add(Dijkstra);
+        this.add(AStar);
+        this.add(BFS);
+        this.add(DFS);
+        this.add(new Container());
+        this.add(StartB);
+        this.add(GoalB);
+        this.add(WallB);
+        for (int i = 0; i < 3; i++){
+            this.add(new Container());
+        }
+        this.add(Save);
+        this.add(Import);
+        this.add(Reset);
+        this.add(Start);
+
+        // ACTION LISTENERS
+        Save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    new SaveFile();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        Reset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeAllNode();
+            }
+        });
+        Import.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser j = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Text documents (*.txt)", "txt", "text");
+                j.setFileFilter(filter);
+                int response = j.showOpenDialog(null);
+                JOptionPane option = new JOptionPane();
+                int answer = JOptionPane.showConfirmDialog(null, "Do you want to import "+j.getSelectedFile().getName()+"?","Confirm?",1,3);
+                if (answer == 0) {
+                    removeAllNode();
+                    try {
+                        new ImportFile(j.getSelectedFile().getAbsolutePath());
+                    } catch (FileNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }
+        });
+        Start.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (Dijkstra.isSelected()){
+                    GUI.Dijkstra();
+                }
+                else if (AStar.isSelected()){
+                    GUI.AStar();
+                }
+                else if (BFS.isSelected()){
+                    GUI.BFS();
+                }
+                else if (DFS.isSelected()){
+                    GUI.DFS();
+                }
+            }
+        });
         //SET START AND END
         setStartPoint(2, 7);
         setGoalPoint(11,4);
     }
+
     private void setStartPoint(int col, int row){
 
         //BEGINNING OF PROGRAM CURRENT NODE IS EQUAL TO THE STARTING NODE
@@ -60,6 +157,13 @@ public class Panel extends JPanel {
         node[col][row].setAsSolid();
     }
 
+    public static void removeAllNode(){
+        for (int i = 0; i < maxRow; i++){
+            for(int j = 0; j < maxCol; j++){
+                node[i][j].deselect();
+            }
+        }
+    }
     public ArrayList<Node> GetUnvisitedNeighbors(Node n){
         ArrayList<Node> neighbors = new ArrayList<>();
         if(n.row-1>=0 && !node[n.col][n.row - 1].solid && !node[n.col][n.row - 1].visited) neighbors.add(node[n.col][n.row-1]);

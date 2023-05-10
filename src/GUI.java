@@ -61,8 +61,7 @@ public class GUI extends JFrame{
             }
         });
     }
-
-    void Dijkstra () {
+    static void Dijkstra() {
         JFrame window = new JFrame();
         Panel Panel = new Panel();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,7 +76,7 @@ public class GUI extends JFrame{
         Panel.Dijkstra(Panel, Panel.startPoint, Panel.endPoint);
     }
 
-    void AStar () {
+    static void AStar() {
         JFrame window = new JFrame();
         Panel Panel = new Panel();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,8 +90,8 @@ public class GUI extends JFrame{
 
         Panel.AStar(Panel, Panel.startPoint, Panel.endPoint);
     }
-    void BFS(){
-        JDialog d = new JDialog(this, "Unavailable Features");
+    static void BFS(){
+        JDialog d = new JDialog((Frame) null, "Unavailable Features");
         JLabel l = new JLabel("kerjain git. BFS");
         JPanel p = new JPanel();
         p.add(l);
@@ -101,8 +100,8 @@ public class GUI extends JFrame{
         d.setVisible(true);
     }
 
-    void DFS(){
-        JDialog d = new JDialog(this, "Unavailable Features");
+    static void DFS(){
+        JDialog d = new JDialog((Frame) null, "Unavailable Features");
         JLabel l = new JLabel("kerjain git. DFS");
         JPanel p = new JPanel();
         p.add(l);
@@ -110,7 +109,6 @@ public class GUI extends JFrame{
         d.setSize(100,100);
         d.setVisible(true);
     }
-
     void Import() throws FileNotFoundException {
         while (true) {
             JFileChooser j = new JFileChooser();

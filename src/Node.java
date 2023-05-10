@@ -15,9 +15,10 @@ public class Node extends JButton implements ActionListener, Comparable<Node> {
     boolean start;
     boolean goal;
     boolean solid;
+    boolean open;
     boolean visited;
 
-    
+
     public Node(int col, int row){
         this.col = col;
         this.row = row;

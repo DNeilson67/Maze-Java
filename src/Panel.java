@@ -2,6 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+
 public class Panel extends JPanel {
     final int maxCol = 15;
     final int maxRow = 15;
@@ -51,11 +55,6 @@ public class Panel extends JPanel {
         setSolidNode(6, 3);
         setSolidNode(5, 3);
         setSolidNode(5, 2);
-
-
-        AStar(this, startPoint, endPoint);
-
-
     }
     private void setStartPoint(int col, int row){
 

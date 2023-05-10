@@ -1,8 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Panel extends JPanel {
-    final int maxCol = 10;
+    final int maxCol = 15;
     final int maxRow = 15;
     final int nodeScale = 70;
     final int screenWidth = nodeScale * maxCol;
@@ -35,22 +36,13 @@ public class Panel extends JPanel {
         //SET START AND END
         setStartPoint(3, 6);
         setGoalPoint(9,3);
-
-        //PLACE SOLID NODES
-        setSolidNode(9,1);
-        setSolidNode(9,2);
-        setSolidNode(5,3);
-        setSolidNode(9,4);
-        setSolidNode(9,5);
-        setSolidNode(9,6);
-        setSolidNode(7,7);
-
+        AStar(this, startPoint, endPoint);
 
     }
     private void setStartPoint(int col, int row){
 
         //BEGINNING OF PROGRAM CURRENT NODE IS EQUAL TO THE STARTING NODE
-        node[row][col].setAsStart();
+        node[col][row].setAsStart();
         startPoint = node[col][row];
         currentPoint = startPoint;
     }
@@ -58,7 +50,7 @@ public class Panel extends JPanel {
     private void setGoalPoint(int col, int row){
 
         //BEGINNING OF PROGRAM CURRENT NODE IS EQUAL TO THE STARTING NODE
-        node[row][col].setAsGoal();
+        node[col][row].setAsGoal();
         endPoint = node[col][row];
     }
 
@@ -66,12 +58,22 @@ public class Panel extends JPanel {
         node[col][row].setAsSolid();
     }
 
+    public ArrayList<Node> GetUnvisitedNeighbors(Node n){
+        ArrayList<Node> neighbors = new ArrayList<>();
+        if(n.row-1>=0 && node[n.col][n.row-1].solid == false && node[n.col][n.row-1].visited == false) neighbors.add(node[n.col][n.row-1]);
+        if(n.col-1>=0 && node[n.col-1][n.row].solid == false && node[n.col-1][n.row].visited == false) neighbors.add(node[n.col-1][n.row]);
+        if(n.row+1<maxRow && node[n.col][n.row+1].solid == false && node[n.col][n.row+1].visited == false) neighbors.add(node[n.col][n.row+1]);
+        if(n.col+1<maxCol && node[n.col+1][n.row].solid == false && node[n.col+1][n.row].visited == false) neighbors.add(node[n.col+1][n.row]);
+        return neighbors;
+    }
     public void Dijkstra(Panel maze, Node start, Node end) {
         PriorityQueue<Node> queue = new PriorityQueue<>();
 
         // Init all distances with infinity
-        for (Node node : maze.node) {
-            node.distance = Integer.MAX_VALUE;
+        for (Node[] node : maze.node) {
+            for(Node n : node){
+                n.distance = Integer.MAX_VALUE;
+            }
         }
 
         // Distance to the root itself is zero
@@ -83,10 +85,11 @@ public class Panel extends JPanel {
         // Iterate over the priority queue until it is empty.
         while (!queue.isEmpty()) {
             Node curNode = queue.poll();  // Fetch next closest node
-            curNode.visited = true;  // Mark as discovered
+            curNode.setAsDiscovered(); // Mark as discovered
+            if(curNode == end) break;
 
             // Iterate over unvisited neighbors
-            for (Node neighbor : curNode.GetUnvisitedNeighbors()) {
+            for (Node neighbor : GetUnvisitedNeighbors(curNode)) {
                 // Update minimal distance to neighbor
                 // Note: distance between to adjacent node is constant and equal 1 in our grid
                 int minDistance = Math.min(neighbor.distance, curNode.distance + 1);
@@ -110,15 +113,17 @@ public class Panel extends JPanel {
     public void AStar(Panel maze, Node start, Node end) {
         PriorityQueue<Node> queue = new PriorityQueue<Node>();
         // Init all distances with infinity
-        for (Node node : maze.node) {
-            node.distance = Integer.MAX_VALUE;
-            node.rootDistance = Integer.MAX_VALUE;
 
-            // Note: we may reinforce the manhattan heuristic by using a factor.
-            node.manhattanDistance = 2 * (Math.abs(end.row - node.row) + Math.abs(end.col - node.col));
+        for (Node[] node : maze.node) {
+            for(Node n : node){
+                n.distance = Integer.MAX_VALUE;
+                n.rootDistance = Integer.MAX_VALUE;
+
+                n.manhattanDistance = 2* (Math.abs(end.col - n.col) + Math.abs(end.row - n.row));
+            }
         }
         // Distance to the root itself is zero
-        start.rootDistance = 0;
+        start.distance = 0;
 
         // Init queue with the root node
         queue.add(start);
@@ -126,10 +131,11 @@ public class Panel extends JPanel {
         // Iterate over the priority queue until it is empty.
         while (!queue.isEmpty()) {
             Node curNode = queue.poll(); // Fetch next closest node
-            curNode.visited = true; // Mark as discovered
+            curNode.setAsDiscovered(); // Mark as discovered
+            if(curNode == end) break;
 
             // Iterate over unvisited neighbors
-            for (Node neighbor : curNode.getUnvisitedNeighbors()) {
+            for (Node neighbor : GetUnvisitedNeighbors(curNode)) {
                 // Update root minimal distance to neighbor including manhattan distance
                 neighbor.rootDistance = Math.min(neighbor.rootDistance, curNode.rootDistance + 1);
                 int minDistance = Math.min(neighbor.distance, neighbor.rootDistance + neighbor.manhattanDistance);

@@ -34,8 +34,6 @@ public class PriorityQueue<T extends Comparable<T>> {
   }
 
 
-  // Polls an element from the priority queue.
-  // Make sure the queue is not empty before calling.
   public Node poll() {
     return removeAt(0);
   }
@@ -45,7 +43,6 @@ public class PriorityQueue<T extends Comparable<T>> {
     return map.containsKey(node);
   }
 
-  // Adds a none null element to the priority queue
   public void add(Node node) {
     if (node == null) throw new IllegalArgumentException("No null elements please :)");
     if(size < capacity){

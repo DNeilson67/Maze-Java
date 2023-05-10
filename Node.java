@@ -2,10 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class Node extends JButton implements ActionListener, Comparable<Node> {
 
-    int priority;
     Node parent;
     int col;
     int row;
@@ -33,6 +33,11 @@ public class Node extends JButton implements ActionListener, Comparable<Node> {
         setForeground(Color.WHITE);
         setText("Start");
         start = true;
+    }
+
+    public void setAsDiscovered(){
+        setBackground(Color.ORANGE);
+        visited = true;
     }
 
     public void setAsGoal(){

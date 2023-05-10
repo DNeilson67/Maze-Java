@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/PathfindingJava.iml" filepath="$PROJECT_DIR$/.idea/PathfindingJava.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Pathfinding.iml" filepath="$PROJECT_DIR$/Pathfinding.iml" />
     </modules>
   </component>
 </project>

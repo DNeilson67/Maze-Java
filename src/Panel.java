@@ -7,13 +7,13 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Panel extends JPanel {
-    final int maxCol = 15;
-    final int maxRow = 15;
+    static final int maxCol = 15;
+    static final int maxRow = 15;
     final int nodeScale = 70;
     final int screenWidth = nodeScale * maxCol;
     final int screenHeight = nodeScale * maxRow;
 
-    Node[][] node = new Node[maxCol][maxRow];
+    static Node[][] node = new Node[maxCol][maxRow];
     Node startPoint, endPoint, currentPoint;
 
     public Panel(){
@@ -40,21 +40,6 @@ public class Panel extends JPanel {
         //SET START AND END
         setStartPoint(2, 7);
         setGoalPoint(11,4);
-
-        setSolidNode(10, 3);
-        setSolidNode(10, 4);
-        setSolidNode(10, 5);
-        setSolidNode(10, 6);
-        setSolidNode(10, 7);
-        setSolidNode(10, 8);
-        setSolidNode(11, 8);
-        setSolidNode(12, 8);
-        setSolidNode(9, 3);
-        setSolidNode(8, 3);
-        setSolidNode(7, 3);
-        setSolidNode(6, 3);
-        setSolidNode(5, 3);
-        setSolidNode(5, 2);
     }
     private void setStartPoint(int col, int row){
 
@@ -71,7 +56,7 @@ public class Panel extends JPanel {
         endPoint = node[col][row];
     }
 
-    private void setSolidNode(int col, int row){
+    public static void setSolidNode(int col, int row){
         node[col][row].setAsSolid();
     }
 

@@ -58,10 +58,10 @@
       </component>
       <component id="986ba" class="javax.swing.JButton" binding="importAMazeButton" default-binding="true">
         <constraints>
-          <grid row="6" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="6" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Import a maze"/>
+          <text value="Import a Maze"/>
         </properties>
       </component>
       <component id="a5240" class="javax.swing.JButton" binding="AStarAlgorithmButton" default-binding="true">
@@ -87,6 +87,14 @@
         </constraints>
         <properties>
           <text value="  DFS Algorithm  "/>
+        </properties>
+      </component>
+      <component id="471f" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="6" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value=" V 0.0.7"/>
         </properties>
       </component>
     </children>

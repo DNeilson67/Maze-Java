@@ -1,7 +1,9 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 
 public class GUI extends JFrame{
     private JButton djikstraAlgorithmButton;
@@ -51,7 +53,11 @@ public class GUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                Import();
+                try {
+                    Import();
+                } catch (FileNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
     }
@@ -74,7 +80,7 @@ public class GUI extends JFrame{
     void AStar () {
         JFrame window = new JFrame();
         Panel Panel = new Panel();
-        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setContentPane(Panel);
 
@@ -105,16 +111,40 @@ public class GUI extends JFrame{
         d.setVisible(true);
     }
 
-    void Import(){
-        JFrame window = new JFrame();
-        Panel Panel = new Panel();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setResizable(false);
-        window.setContentPane(Panel);
+    void Import() throws FileNotFoundException {
+        while (true) {
+            JFileChooser j = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Text documents (*.txt)", "txt", "text");
+            j.setFileFilter(filter);
+            int response = j.showOpenDialog(null);
+            if (response != 0){
+                new GUI();
+                break;
+            }
+            JOptionPane option = new JOptionPane();
+            int answer = JOptionPane.showConfirmDialog(this, "Do you want to import "+j.getSelectedFile().getName()+"?","Confirm?",1,3);
+            if (answer == 0) {
 
-        window.pack();
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-        window.setResizable(true);
+                JFrame window = new JFrame();
+                Panel Panel = new Panel();
+                window.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                window.setResizable(false);
+                window.setContentPane(Panel);
+
+                window.pack();
+                window.setLocationRelativeTo(null);
+                window.setVisible(true);
+                window.setResizable(true);
+
+                new ImportFile(j.getSelectedFile().getAbsolutePath());
+                break;
+            }
+            else if (answer == 2 || answer == -1){
+                new GUI();
+                break;
+            }
+        }
+
     }
+
 }

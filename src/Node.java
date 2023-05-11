@@ -15,7 +15,6 @@ public class Node extends JButton implements ActionListener, Comparable<Node> {
     boolean start;
     boolean goal;
     boolean solid;
-    boolean open;
     boolean visited;
 
 
@@ -33,6 +32,11 @@ public class Node extends JButton implements ActionListener, Comparable<Node> {
         setForeground(Color.WHITE);
         setText("Start");
         start = true;
+    }
+
+    public void setAsPath(){
+        setBackground(Color.red);
+        setForeground(Color.black);
     }
 
     public void setAsDiscovered(){

@@ -164,6 +164,16 @@ public class Panel extends JPanel {
             }
         }
     }
+    public void backtrackPath(){
+        Node n = endPoint;
+        while(n != startPoint){
+            n = n.parent;
+
+            if(n != startPoint){
+                n.setAsPath();
+            }
+        }
+    }
     public ArrayList<Node> GetUnvisitedNeighbors(Node n){
         ArrayList<Node> neighbors = new ArrayList<>();
         if(n.row-1>=0 && !node[n.col][n.row - 1].solid && !node[n.col][n.row - 1].visited) neighbors.add(node[n.col][n.row-1]);
@@ -211,7 +221,7 @@ public class Panel extends JPanel {
                 }
             }
         }
-
+        backtrackPath();
         // Done! At this point, we just have to walk back from the end using the parent
         // If end does not have a parent, it means that it has not been found.
     }
@@ -257,9 +267,13 @@ public class Panel extends JPanel {
                 // Add neighbor to the queue for further visiting.
                 if (!queue.contains(neighbor)) {
                     queue.add(neighbor);
+
                 }
+
             }
         }
+
+        backtrackPath();
         // Done! At this point we just have to walk back from the end using the parent
         // If end does not have a parent, it means that it has not been found.
     }

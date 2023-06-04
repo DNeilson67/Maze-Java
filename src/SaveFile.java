@@ -23,7 +23,12 @@ public class SaveFile {
                             if (Panel.node[i][j].getForeground() == Color.black && Panel.node[i][j].getBackground() == Color.black) {
                                 w.write(i + "," + j+"\n");
                             }
-                            ;
+                            else if (Panel.node[i][j].getBackground() == Color.green){
+                                w.write(i+"."+j+"\n");
+                            }
+                            else if (Panel.node[i][j].getBackground() == Color.blue){
+                                w.write(i+"/"+j+"\n");
+                            }
                         }
                     }
                     w.close();

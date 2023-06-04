@@ -3,146 +3,210 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class GUI extends JFrame{
-    private JButton djikstraAlgorithmButton;
-    private JPanel panel1;
-    private JButton AStarAlgorithmButton;
-    private JLabel Title;
-    private JButton importAMazeButton;
-    private JButton BFSAlgorithmButton;
-    private JButton DFSAlgorithmButton;
-
-    public GUI(){
-        setContentPane(panel1);
-        setTitle("Main Menu");
-        setSize(600,400);
-        setVisible(true);
+    public GUI() {
+        Panel panel = new Panel();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
-        Title.setFont(new Font("Roboto", Font.BOLD, 25));
-        djikstraAlgorithmButton.addActionListener(new ActionListener() {
+        setContentPane(panel);
+        setVisible(true);
+        setSize(new Dimension(Panel.screenWidth, Panel.screenHeight));
+        setTitle("Pathfinding Navigator");
+        //LABELS
+        JLabel benchmarkLabel = new JLabel("Time: N/A");
+        JLabel delayLabel = new JLabel("Delay");
+        JLabel instruction = new JLabel("<- Hover me");
+        //BUTTONS
+        JRadioButton Dijkstra = new JRadioButton("Dijkstra", true);
+        JRadioButton DijkstraF = new JRadioButton("DijkstraF");
+        JRadioButton AStar = new JRadioButton("AStar");
+        JRadioButton BFS = new JRadioButton("BFS");
+        JRadioButton DFS = new JRadioButton("DFS");
+        JRadioButton BestFS = new JRadioButton("BestFS");
+        JButton Generate = new JButton("Generate");
+        JButton Import = new JButton("Import");
+        JButton Reset = new JButton("Reset");
+        JButton Start = new JButton("Start");
+        JButton Save = new JButton("Save");
+
+
+        // GROUP BUTTONS
+        ButtonGroup BG = new ButtonGroup();
+        BG.add(Dijkstra);
+        BG.add(AStar);
+        BG.add(BFS);
+        BG.add(DFS);
+        BG.add(BestFS);
+
+        //INPUTS
+        JSpinner inputDelay = new JSpinner();
+
+        // ADDING THE BUTTONS TO THE FRAME
+        this.add(Dijkstra);
+        this.add(AStar);
+        this.add(BFS);
+        this.add(DFS);
+        this.add(BestFS);
+        this.add(new Container());
+        this.add(benchmarkLabel);
+        this.add(instruction);
+        this.add(delayLabel);
+        this.add(inputDelay);
+        this.add(Generate);
+        this.add(Save);
+        this.add(Import);
+        this.add(Reset);
+        this.add(Start);
+
+
+        // ACTION LISTENERS
+        benchmarkLabel.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                Dijkstra();
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                benchmarkLabel.setText("Time :"+Panel.totalTimer+"s");
             }
         });
 
-        AStarAlgorithmButton.addActionListener(new ActionListener() {
+        Save.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            new SaveFile();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        ;
+                    }
+                });
+        Reset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
-                AStar();
+                Panel.removeAllNode();
             }
         });
-        BFSAlgorithmButton.addActionListener(new ActionListener() {
+        Import.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                BFS();
+                JFileChooser j = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Text documents (*.txt)", "txt", "text");
+                j.setFileFilter(filter);
+                int response = j.showOpenDialog(null);
+                JOptionPane option = new JOptionPane();
+                int answer = JOptionPane.showConfirmDialog(null, "Do you want to import " + j.getSelectedFile().getName() + "?", "Confirm?", 1, 3);
+                if (answer == 0) {
+                    Panel.removeAllNode();
+                    try {
+                        new ImportFile(j.getSelectedFile().getAbsolutePath());
+                    } catch (FileNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
             }
         });
-        DFSAlgorithmButton.addActionListener(new ActionListener() {
+        Generate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DFS();
+                Panel.generateMaze(panel);
             }
         });
-        importAMazeButton.addActionListener(new ActionListener() {
+        Start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
-                try {
-                    Import();
-                } catch (FileNotFoundException ex) {
-                    throw new RuntimeException(ex);
+                if (Dijkstra.isSelected()) {
+                    Panel.removeOrangeNode();
+                    try {
+                        if (Panel.startPoint != null && Panel.endPoint != null) {
+                            benchmarkLabel.setText("Time: N/A");
+                            CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+                                // Simulate some time-consuming task
+                                Panel.Dijkstra(panel, panel.startPoint, panel.endPoint, (Integer) inputDelay.getValue());
+                                return "Task completed!";
+                            });
+
+                            future.thenAccept(result -> {
+                                // Task has completed, execute additional logic
+                                benchmarkLabel.setText("Time :"+ Panel.totalTimer+"s");
+                                // ... Your additional logic here ...
+                            });
+
+                            // Wait for the task to complete
+                            future.get();
+                        } else {
+                            error();
+                        }
+                    }
+                    catch (Exception a) {
+                        error();
+                    }
+                    System.out.println(Panel.getTotalTimer());
+                } else if (AStar.isSelected()) {
+                    Panel.removeOrangeNode();
+                    try {
+                        if (Panel.startPoint != null && Panel.endPoint != null) {
+                            benchmarkLabel.setText("Time: N/A");
+                            Panel.AStar(panel, panel.startPoint, panel.endPoint, (Integer) inputDelay.getValue());
+                        } else {
+                            error();
+                        }
+                    }
+                    catch (Exception a) {
+                        error();
+                    }
+                } else if (BFS.isSelected()) {
+                    Panel.removeOrangeNode();
+                    try {
+                        if (Panel.startPoint != null && Panel.endPoint != null) {
+                            benchmarkLabel.setText("Time: N/A");
+                            Panel.BFS(panel, panel.startPoint, panel.endPoint, (Integer) inputDelay.getValue());
+                        } else {
+                            error();
+                        }
+                    }
+                    catch (Exception a){
+                        error();
+                    }
+                } else if (DFS.isSelected()) {
+                    Panel.removeOrangeNode();
+                    try {
+                        if (Panel.startPoint != null && Panel.endPoint != null) {
+                            benchmarkLabel.setText("Time: N/A");
+                            Panel.DFS(panel, panel.startPoint, panel.endPoint, (Integer) inputDelay.getValue());
+                        } else {
+                            error();
+                        }
+                    }
+                    catch (Exception a){
+                        error();
+                    }
+                }
+                else if (BestFS.isSelected()){
+                    Panel.removeOrangeNode();
+                    try{
+                        if (Panel.startPoint != null && Panel.endPoint != null){
+                            benchmarkLabel.setText("Time: N/A");
+                            Panel.BestFS(panel, panel.startPoint, panel.endPoint, (Integer) inputDelay.getValue());
+                        }
+                        else{
+                            error();
+                        }
+                    } catch (Exception a) {
+                        error();
+                    }
                 }
             }
         });
     }
-    static void Dijkstra() {
-        JFrame window = new JFrame();
-        Panel Panel = new Panel();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setResizable(false);
-        window.setContentPane(Panel);
-
-        window.pack();
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-        window.setResizable(true);
-
-        Panel.Dijkstra(Panel, Panel.startPoint, Panel.endPoint);
+    void error(){
+        JOptionPane option = new JOptionPane();
+        int answer = JOptionPane.showConfirmDialog(null, "An error occurred. Please try again. \nCAUSE OF ERROR: Start mark or Goal mark does not exist.","Error",JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
     }
-
-    static void AStar() {
-        JFrame window = new JFrame();
-        Panel Panel = new Panel();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setResizable(false);
-        window.setContentPane(Panel);
-
-        window.pack();
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-        window.setResizable(true);
-
-        Panel.AStar(Panel, Panel.startPoint, Panel.endPoint);
-    }
-    static void BFS(){
-        JDialog d = new JDialog((Frame) null, "Unavailable Features");
-        JLabel l = new JLabel("kerjain git. BFS");
-        JPanel p = new JPanel();
-        p.add(l);
-        d.add(p);
-        d.setSize(200,200);
-        d.setVisible(true);
-    }
-
-    static void DFS(){
-        JDialog d = new JDialog((Frame) null, "Unavailable Features");
-        JLabel l = new JLabel("kerjain git. DFS");
-        JPanel p = new JPanel();
-        p.add(l);
-        d.add(p);
-        d.setSize(100,100);
-        d.setVisible(true);
-    }
-    void Import() throws FileNotFoundException {
-        while (true) {
-            JFileChooser j = new JFileChooser();
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Text documents (*.txt)", "txt", "text");
-            j.setFileFilter(filter);
-            int response = j.showOpenDialog(null);
-            if (response != 0){
-                new GUI();
-                break;
-            }
-            JOptionPane option = new JOptionPane();
-            int answer = JOptionPane.showConfirmDialog(this, "Do you want to import "+j.getSelectedFile().getName()+"?","Confirm?",1,3);
-            if (answer == 0) {
-
-                JFrame window = new JFrame();
-                Panel Panel = new Panel();
-                window.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                window.setResizable(false);
-                window.setContentPane(Panel);
-
-                window.pack();
-                window.setLocationRelativeTo(null);
-                window.setVisible(true);
-                window.setResizable(true);
-
-                new ImportFile(j.getSelectedFile().getAbsolutePath());
-                break;
-            }
-            else if (answer == 2 || answer == -1){
-                new GUI();
-                break;
-            }
-        }
-
-    }
-
 }

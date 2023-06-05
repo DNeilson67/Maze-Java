@@ -99,7 +99,7 @@ public class Node extends JButton implements ActionListener, Comparable<Node> {
         else if (getBackground() == Color.BLACK && getForeground() == Color.BLACK && Panel.startPoint != null && Panel.endPoint != null){
             deselect();
         } // If node = black, start point and end point exist, then remove solid node.
-        else if (getBackground() == Color.blue && getForeground() == Color.BLACK && Panel.startPoint != null && Panel.endPoint != null) {
+        else if (getBackground() == Color.cyan && getForeground() == Color.BLACK && Panel.startPoint != null && Panel.endPoint != null) {
             Panel.removeGoalPoint();
             deselect();
         }
@@ -108,7 +108,7 @@ public class Node extends JButton implements ActionListener, Comparable<Node> {
             Panel.setGoalPoint(this.col, this.row);
         }
         // if node = green, start point exists, end point does not exist, then remove start point.
-        else if (getBackground() == Color.green && getForeground() == Color.WHITE && Panel.startPoint != null && Panel.endPoint == null) {
+        else if (getBackground() == Color.green && getForeground() == Color.BLACK && Panel.startPoint != null && Panel.endPoint == null) {
             Panel.removeStartPoint();
             deselect();
         }

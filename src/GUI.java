@@ -20,10 +20,13 @@ public class GUI extends JFrame{
         setVisible(true);
         setSize(new Dimension(Panel.screenWidth, Panel.screenHeight));
         setTitle("Pathfinding Navigator");
+        //Font
+        Font f1 = new Font(Font.SANS_SERIF, Font.BOLD, 9);
+        Font f2 = new Font(Font.SANS_SERIF, Font.BOLD, 8);
+        Font f3 = new Font(Font.SANS_SERIF, Font.BOLD, 7);
         //LABELS
         JLabel benchmarkLabel = new JLabel("Time: N/A");
         JLabel delayLabel = new JLabel("Delay");
-        JLabel instruction = new JLabel("<- Hover me");
         //BUTTONS
         JRadioButton Dijkstra = new JRadioButton("Dijkstra", true);
         JRadioButton DijkstraF = new JRadioButton("DijkstraF");
@@ -31,7 +34,7 @@ public class GUI extends JFrame{
         JRadioButton BFS = new JRadioButton("BFS");
         JRadioButton DFS = new JRadioButton("DFS");
         JRadioButton BestFS = new JRadioButton("BestFS");
-        JButton Generate = new JButton("Generate");
+        JButton Generate = new JButton("Maze");
         JButton Import = new JButton("Import");
         JButton Reset = new JButton("Reset");
         JButton Start = new JButton("Start");
@@ -49,6 +52,18 @@ public class GUI extends JFrame{
         //INPUTS
         JSpinner inputDelay = new JSpinner();
 
+        // Set Font
+        Dijkstra.setFont(f1);
+        AStar.setFont(f1);
+        BFS.setFont(f1);
+        DFS.setFont(f1);
+        BestFS.setFont(f1);
+        Generate.setFont(f1);
+        Save.setFont(f1);
+        Import.setFont(f3);
+        Reset.setFont(f2);
+        Start.setFont(f1);
+
         // ADDING THE BUTTONS TO THE FRAME
         this.add(Dijkstra);
         this.add(AStar);
@@ -57,7 +72,9 @@ public class GUI extends JFrame{
         this.add(BestFS);
         this.add(new Container());
         this.add(benchmarkLabel);
-        this.add(instruction);
+        for (int i = 0; i < Panel.maxRow-14;i++){
+            this.add(new Container());
+        }
         this.add(delayLabel);
         this.add(inputDelay);
         this.add(Generate);

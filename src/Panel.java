@@ -8,8 +8,8 @@ import java.util.Random;
 import java.util.Stack;
 
 public class Panel extends JPanel {
-    static final int maxCol = 30;
-    static final int maxRow = 30;
+    static final int maxCol = 25;
+    static final int maxRow = 25;
     static final int nodeScale = 70;
     static final int screenWidth = nodeScale * maxCol;
     static final int screenHeight = nodeScale * maxRow;
@@ -364,9 +364,11 @@ public class Panel extends JPanel {
                     ArrayList<Node> neighbors = GetUnvisitedNeighbors(currentNode);
 
                     for(Node neighbor : neighbors){
-                        neighbor.visited = true;
-                        neighbor.parent = currentNode;
-                        stack.push(neighbor);
+                        if (!neighbor.visited) {
+                            neighbor.visited = true; // Mark the neighbor as visited
+                            neighbor.parent = currentNode;
+                            stack.push(neighbor);
+                        }
                     }
 
 
@@ -375,6 +377,7 @@ public class Panel extends JPanel {
                     timer.stop();
                     try {
                         backtrackPath(delay);
+
                     } catch (InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }

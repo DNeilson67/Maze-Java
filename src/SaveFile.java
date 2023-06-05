@@ -26,7 +26,7 @@ public class SaveFile {
                             else if (Panel.node[i][j].getBackground() == Color.green){
                                 w.write(i+"."+j+"\n");
                             }
-                            else if (Panel.node[i][j].getBackground() == Color.blue){
+                            else if (Panel.node[i][j].getBackground() == Color.cyan){
                                 w.write(i+"/"+j+"\n");
                             }
                         }

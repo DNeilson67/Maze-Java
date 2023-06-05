@@ -3,13 +3,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Objects;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
 
 public class Panel extends JPanel {
-    static final int maxCol = 25;
-    static final int maxRow = 25;
+    static final int maxCol = 15;
+    static final int maxRow = 15;
     static final int nodeScale = 70;
     static final int screenWidth = nodeScale * maxCol;
     static final int screenHeight = nodeScale * maxRow;
@@ -137,26 +140,27 @@ public class Panel extends JPanel {
         totalTimer = 0;
         double startTimer = System.currentTimeMillis();
         Timer timer = new Timer(delay, null);
-        PriorityQueue<Node> queue = new PriorityQueue<>();
+        PQ<Node> queue = new PQ<Node>();
 
-        // distance all nodes to infinity
+        // Init all distances with infinity
         for (Node[] node : maze.node) {
             for(Node n : node){
                 n.distance = Integer.MAX_VALUE;
             }
         }
 
+        // Distance to the root itself is zero
         start.distance = 0;
 
-        // start queue with start node
+        // Init queue with the root node
         queue.add(start);
 
         timer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(!queue.isEmpty()) {
-                    Node curNode = queue.poll();  // get the next closest node
-                    if (curNode != end && curNode != start) curNode.setAsDiscovered(); // set as visited
+                    Node curNode = queue.poll();  // Fetch next closest node
+                    if (curNode != end && curNode != start) curNode.setAsDiscovered(); // Mark as discovered
                     if (curNode == end) {
                         timer.stop();
                         try {
@@ -168,16 +172,16 @@ public class Panel extends JPanel {
                         double differences = (endTimer-startTimer)/1000;
                         setTotalTimer(differences);
                     }
-                    // get univisited neighbors
+                    // Iterate over unvisited neighbors
                     for (Node neighbor : GetUnvisitedNeighbors(curNode)) {
-                        // update the minimal distance to neighbor
-                        // side note: the distance between to adjacent nodes is always constant & equal to 1 in our maze    
+                        // Update minimal distance to neighbor
+                        // Note: distance between to adjacent node is constant and equal 1 in our grid
                         int minDistance = Math.min(neighbor.distance, curNode.distance + 1);
                         if (minDistance != neighbor.distance) {
                             neighbor.distance = minDistance;  // update minimal distance
-                            neighbor.parent = curNode;        // update the parent
+                            neighbor.parent = curNode;        // update best parent
 
-                            // change priority to neighbor since it's closer noW
+                            // Change queue priority of the neighbor since it has become closer.
                             if (queue.contains(neighbor)) {
                                 queue.remove(neighbor);
                             }
@@ -196,30 +200,31 @@ public class Panel extends JPanel {
 
     public static void AStar(Panel maze, Node start, Node end, int delay) throws InterruptedException {
         totalTimer = 0;
-        PriorityQueue<Node> queue = new PriorityQueue<Node>();
+        PQ<Node> queue = new PQ<Node>();
         Timer timer = new Timer(delay, null);
         double startTimer = System.currentTimeMillis();
 
         for (Node[] node : maze.node) {
             for(Node n : node){
-                // distance all nodes to infinity
                 n.distance = Integer.MAX_VALUE;
                 n.rootDistance = Integer.MAX_VALUE;
 
-                n.manhattanDistance = 2* (Math.abs(end.col - n.col) + Math.abs(end.row - n.row));
+                n.manhattanDistance = 10*(Math.abs(end.col - n.col) + Math.abs(end.row - n.row));
             }
         }
+        // Distance to the root itself is zero
         start.distance = 0;
 
-        // start queue with start node
+        // Init queue with the root node
         queue.add(start);
 
         timer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Iterate over the priority queue until it is empty.
                 if (!queue.isEmpty()) {
-                    Node curNode = queue.poll(); // get closest node
-                    if(curNode != end && curNode != start) curNode.setAsDiscovered(); // set as visited
+                    Node curNode = queue.poll(); // Fetch next closest node
+                    if(curNode != end && curNode != start) curNode.setAsDiscovered(); // Mark as discovered
                     if(curNode == end) {
                         timer.stop();
                         try {
@@ -231,21 +236,21 @@ public class Panel extends JPanel {
                         }
                     }
 
-                    // get unvisited neighbors
+                    // Iterate over unvisited neighbors
                     for (Node neighbor : GetUnvisitedNeighbors(curNode)) {
-                        // initiate root minimal distance to the neighbor node added our manhattan distance
+                        // Update root minimal distance to neighbor including manhattan distance
                         neighbor.rootDistance = Math.min(neighbor.rootDistance, curNode.rootDistance + 1);
                         int minDistance = Math.min(neighbor.distance, neighbor.rootDistance + neighbor.manhattanDistance);
                         if (minDistance != neighbor.distance) {
                             neighbor.distance = minDistance; // update mininmal distance
-                            neighbor.parent = curNode; // update the parent
-                            // change priority to neighbor since it's closer now
+                            neighbor.parent = curNode; // update best parent
+                            // Change queue priority of the neighbor since it have became closer.
                             if (queue.contains(neighbor)) {
                                 queue.remove(neighbor);
                                 queue.add(neighbor);
                             }
                         }
-                        // visit further nodes
+                        // Add neighbor to the queue for further visiting.
                         if (!queue.contains(neighbor)) {
                             queue.add(neighbor);
                         }
@@ -268,14 +273,13 @@ public class Panel extends JPanel {
             // Handle invalid inputs
             return;
         }
-
         for (Node[] node : maze.node) {
             for(Node n : node){
                 n.distance = Integer.MAX_VALUE;
             }
         }
-
-        PriorityQueue<Node> queue = new PriorityQueue<Node>();
+        Queue<Node> queue = new LinkedList();
+ 
         boolean[][] visited = new boolean[maxRow][maxCol];
 
         start.distance = 0;
@@ -299,9 +303,7 @@ public class Panel extends JPanel {
                         totalTimer = (endTimer-startTimer)/1000;
                     }
 
-                    ArrayList<Node> neighbors = GetUnvisitedNeighbors(currentNode);
-
-                    for (Node neighbor : neighbors) {
+                    for (Node neighbor : GetUnvisitedNeighbors(currentNode)) {
                         //store the neighbor row and col in neighborRow and neighborCol
                         int neighborRow = neighbor.row;
                         int neighborCol = neighbor.col;
@@ -328,7 +330,6 @@ public class Panel extends JPanel {
             }
         });
         timer.start();
-
     }
 
     public static void DFS(Panel maze, Node start, Node end, int delay) throws InterruptedException {
@@ -359,23 +360,18 @@ public class Panel extends JPanel {
                         }
                     }
 
-                    ArrayList<Node> neighbors = GetUnvisitedNeighbors(currentNode);
-
-                    for(Node neighbor : neighbors){
+                    for(Node neighbor : GetUnvisitedNeighbors(currentNode)){
                         if (!neighbor.visited) {
                             neighbor.visited = true; // Mark the neighbor as visited
                             neighbor.parent = currentNode;
                             stack.push(neighbor);
                         }
                     }
-
-
                 }
                 else {
                     timer.stop();
                     try {
                         backtrackPath(delay);
-
                     } catch (InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -425,9 +421,7 @@ public class Panel extends JPanel {
                             throw new RuntimeException(ex);
                         }
                     }
-
                     ArrayList<Node> neighbors = GetUnvisitedNeighbors(currentNode);
-
                     for (Node neighbor : neighbors) {
                         //store the neighbor row and col in neighborRow and neighborCol
                         int neighborRow = neighbor.row;
@@ -455,57 +449,9 @@ public class Panel extends JPanel {
                 }
             }
         });
-
         timer.start();
     }
-    public static void DijkstraF(Panel maze, Node start, Node end, int delay) {
-        FibonacciHeap<Node> queue = new FibonacciHeap<>();
 
-        // Init all distances with infinity
-        for (Node[] node : maze.node) {
-            for (Node n : node) {
-                n.distance = Integer.MAX_VALUE;
-            }
-        }
-
-        // Distance to the root itself is zero
-        start.distance = 0;
-
-        // Init queue with the root node
-        queue.add(start);
-
-        // Iterate over the priority queue until it is empty.
-        while (!queue.isEmpty()) {
-            Node curNode = (Node) queue.poll();  // Fetch next closest node
-            if (curNode != end && curNode != start) curNode.setAsDiscovered(); // Mark as discovered
-            if (curNode == end) break;
-
-            // Iterate over unvisited neighbors
-            for (Node neighbor : GetUnvisitedNeighbors(curNode)) {
-                // Update minimal distance to neighbor
-                // Note: distance between to adjacent node is constant and equal 1 in our grid
-                int minDistance = Math.min(neighbor.distance, curNode.distance + 1);
-                if (minDistance != neighbor.distance) {
-                    neighbor.distance = minDistance;  // update minimal distance
-                    neighbor.parent = curNode;        // update best parent
-
-                    // Change queue priority of the neighbor since it has become closer.
-                    if (queue.contains(neighbor)) {
-                        queue.remove(neighbor);
-                    }
-                    queue.add(neighbor);
-                }
-            }
-        }
-
-        // Done! At this point, we just have to walk back from the end using the parent
-        // If end does not have a parent, it means that it has not been found.
-        try {
-            backtrackPath(delay);
-        } catch (Exception e) {
-            JOptionPane.showConfirmDialog(null, "An error has occurred.\n CAUSE OF ERROR: Path not found.", "Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
-        }
-    }
     public static void generateMaze(Panel maze) {
         Random random = new Random();
 

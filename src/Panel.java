@@ -209,7 +209,7 @@ public class Panel extends JPanel {
                 n.distance = Integer.MAX_VALUE;
                 n.rootDistance = Integer.MAX_VALUE;
 
-                n.manhattanDistance = 10*(Math.abs(end.col - n.col) + Math.abs(end.row - n.row));
+                n.manhattanDistance = 2*(Math.abs(end.col - n.col) + Math.abs(end.row - n.row));
             }
         }
         // Distance to the root itself is zero

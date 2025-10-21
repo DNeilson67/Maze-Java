@@ -31,7 +31,6 @@ public class Panel extends JPanel {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setLayout(new GridLayout(maxRow+1, maxCol));
 
-
         //PlACING NODES
         int col = 0;
         int row = 0;

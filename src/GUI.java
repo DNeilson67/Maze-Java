@@ -15,10 +15,12 @@ import java.util.concurrent.Future;
 public class GUI extends JFrame{
     public GUI() {
         Panel panel = new Panel();
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setContentPane(panel);
         setVisible(true);
-        setSize(new Dimension(Panel.screenWidth, Panel.screenHeight));
+
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        setSize(new Dimension(Panel.screenWidth, Panel.screenHeight));
         setTitle("Pathfinding Navigator");
         //Font
         Font f1 = new Font(Font.SANS_SERIF, Font.BOLD, 9);

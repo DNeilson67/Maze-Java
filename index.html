@@ -19,10 +19,9 @@
 <body>
 <div id="container"></div>
 <script type="module">
-      const base = "/Maze-Java"; // same as _config.yml baseurl
       await cheerpjInit({version: 17});
       cheerpjCreateDisplay(-1, -1, document.getElementById("container"));
-      await cheerpjRunJar(`${base}/app/Maze-Java.jar`);
+      await cheerpjRunJar(`/app/Maze-Java.jar`);
     </script>
 </body>
 </html>

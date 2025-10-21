@@ -18,7 +18,6 @@ public class GUI extends JFrame{
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setContentPane(panel);
         setVisible(true);
-        setResizable(false);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 //        setSize(new Dimension(Panel.screenWidth, Panel.screenHeight));
         setTitle("Pathfinding Navigator");
